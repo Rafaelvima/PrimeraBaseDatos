@@ -50,6 +50,8 @@ public class Clientes extends HttpServlet {
         String num_cuenta = request.getParameter("num_cuenta");
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         List<Cliente> clientes =cls.getAllClientes();
+       String user=request.getParameter("user");
+        String pass=request.getParameter("pass");
 
         
         switch (op) {
@@ -71,10 +73,18 @@ public class Clientes extends HttpServlet {
             case "update":
 
                 break;
-            default:
-                //request.setAttribute("alumnos", ms.getAllMovimientos());
-                request.getRequestDispatcher("pintarListaAlumnos.jsp").forward(request, response);
+                case "login":
+                    
+                    if(user.equals("pasa")){
+                        request.getSession().setAttribute("login", "OK");
+                    }
+                    
+                    break;
 
+                case "logout": {
+                    request.getSession().invalidate();
+                }
+                break;
         }
         request.setAttribute("clientes", clientes);
                 request.getRequestDispatcher("PintarClientes.jsp").forward(request, response);

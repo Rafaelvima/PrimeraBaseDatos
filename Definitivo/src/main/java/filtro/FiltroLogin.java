@@ -64,36 +64,6 @@ public class FiltroLogin implements Filter {
       FilterChain chain)
       throws IOException, ServletException {
         
-
-        if (debug) {
-            log("FiltroLogin:doFilter()");
-        }
-
-        doBeforeProcessing(request, response);
-
-        Throwable problem = null;
-        try {
-            if ((request).getSession().getAttribute(Constantes.LOGIN) != null) {
-                chain.doFilter(request, response);
-            } else {
-                request.getRequestDispatcher(Constantes.PINTAR_LOGIN).forward(request, response);
-            }
-        } catch (Throwable t) {
-            problem = t;
-            t.printStackTrace();
-        }
-
-        doAfterProcessing(request, response);
-
-        if (problem != null) {
-            if (problem instanceof ServletException) {
-                throw (ServletException) problem;
-            }
-            if (problem instanceof IOException) {
-                throw (IOException) problem;
-            }
-            sendProcessingError(problem, response);
-        }
     }
  
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -109,10 +79,10 @@ public class FiltroLogin implements Filter {
 
         Throwable problem = null;
         try {
-            if (((HttpServletRequest)request).getSession().getAttribute(Constantes.LOGIN) != null) {
+            if (((HttpServletRequest)request).getSession().getAttribute("login") != null) {
                 chain.doFilter(request, response);
             } else {
-                request.getRequestDispatcher(Constantes.PINTAR_LOGIN).forward(request, response);
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
         } catch (Throwable t) {
 

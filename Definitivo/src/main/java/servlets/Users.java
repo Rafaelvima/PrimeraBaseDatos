@@ -7,6 +7,7 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,20 +38,30 @@ public class Users extends HttpServlet {
       String op=request.getParameter("op");
        String user=request.getParameter("user");
         String pass=request.getParameter("pass");
+        User u = new User();
         UsersServicios us=new UsersServicios();
         switch(op){
-            case "login":
-                    User u = new User();
-                    u=us.getPassByNombre(user);
-                    if(pass.equals(u.getUs_pass())){
-                        request.getSession().setAttribute("login", "OK");
-                    }
-                    
-                    break;
-
-                case "logout": {
-                    request.getSession().invalidate();
-                }
+            case"all":
+                List<User> usuarios = us.getAllUsers();
+                request.setAttribute("users", usuarios);
+                 request.getRequestDispatcher("/PintarUsers.jsp").forward(request, response);
+                break;
+            case "insert": 
+                 u.setUs_nom(user);
+                 u.setUs_pass(pass);
+                 us.addUser(u);
+                break;
+                case "update": 
+                 u.setUs_nom(user);
+                 u.setUs_pass(pass);
+                 us.updateUser(u);
+                break;
+                case "delete": 
+                 u.setUs_nom(user);
+                 u.setUs_pass(pass);
+                 us.deleteUser(u);
+                break;
+            
         }
     }
 

@@ -18,7 +18,7 @@
             <input type="hidden" value="iniciarS" id="op">
         Usuario<input id="users" value="yo">
        pass<input id="pass" value="yo">
-        <button id="opcli" name ="op" value="entrar"> Login </button>
+        <button id="opcli" name ="op" value="login"> Login </button>
        
         </form>
     </body>
