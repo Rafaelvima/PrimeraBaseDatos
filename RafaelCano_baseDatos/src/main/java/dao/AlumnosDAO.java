@@ -26,6 +26,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -36,62 +37,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class AlumnosDAO
 {
 //Select JDBC
-    public List<Alumno> getAllAlumnosJDBC()
-    {
-        List<Alumno> lista = new ArrayList<>();
-        Alumno nuevo = null;
-        DBConnection db = new DBConnection();
-        Connection con = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try
-        {
-            con = db.getConnection();
-            stmt = con.createStatement();
-            String sql;
-            sql = "SELECT * FROM ALUMNOS";
-            rs = stmt.executeQuery(sql);
-
-            //STEP 5: Extract data from result set
-            while (rs.next())
-            {
-                //Retrieve by column name
-                int id = rs.getInt("id");
-                String nombre = rs.getString("nombre");
-                Date fn = rs.getDate("fecha_nacimiento");
-                Boolean mayor = rs.getBoolean("mayor_edad");
-                nuevo = new Alumno();
-                nuevo.setFecha_nacimiento(fn);
-                nuevo.setId(id);
-                nuevo.setMayor_edad(mayor);
-                nuevo.setNombre(nombre);
-                lista.add(nuevo);
-            }
-
-        } catch (Exception ex)
-        {
-            Logger.getLogger(AlumnosDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-            } catch (SQLException ex)
-            {
-                Logger.getLogger(AlumnosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            db.cerrarConexion(con);
-        }
-        return lista;
-
+     public List<Alumno> getAllAlumnosJDBCTemplate() {
+     
+        JdbcTemplate jtm = new JdbcTemplate(
+          DBConnection.getInstance().getDataSource());
+        List<Alumno> alumnos = jtm.query("Select * from ALUMNOS",
+          new BeanPropertyRowMapper(Alumno.class));
+        
+        
+        return alumnos;
     }
 
     public Alumno insertAlumnoJDBC(Alumno a)

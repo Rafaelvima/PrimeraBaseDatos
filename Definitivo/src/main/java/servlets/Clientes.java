@@ -5,37 +5,30 @@
  */
 package servlets;
 
-import dao.AlumnosDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.text.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
-import model.Alumno;
-import servicios.AlumnosServicios;
+import model.Cliente;
+import servicios.ClientesServicios;
 
 /**
  *
- * @author oscar
+ * @author rafa
  */
-@WebServlet(name = "Alumnos", urlPatterns =
-{
-    "/alumnos"
-})
-public class Alumnos extends HttpServlet
-{
+@WebServlet(name = "Clientes", urlPatterns = {"/clientes"})
+public class Clientes extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,70 +40,44 @@ public class Alumnos extends HttpServlet
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ParseException
-    {
-
-        Alumno a = new Alumno();
+            throws ServletException, IOException, ParseException {
+        Clientes m = new Clientes();
         LocalDate local = LocalDate.of(1910, Month.MARCH, 12);
-        AlumnosServicios as = new AlumnosServicios();
+        ClientesServicios cls = new ClientesServicios();
         String op = request.getParameter("op");
-        String id = request.getParameter("id");
-        String nombre = request.getParameter("nombre");
-        String fecha = request.getParameter("fecha");
-        String mayor = request.getParameter("mayor");
+        String dni1 = request.getParameter("dni1");
+        String dni2 = request.getParameter("dni2");
+        String num_cuenta = request.getParameter("num_cuenta");
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        List<Cliente> clientes =cls.getAllClientes();
+
         
-        switch (op)
-        {
-            case "insert":
-                Date fechaDate = format.parse(fecha);
-                a.setNombre(nombre);
-                if (fecha != null)
-                {
-                    a.setFecha_nacimiento(fechaDate);
-                } else
-                {
-                    a.setFecha_nacimiento(Date.from(local.atStartOfDay().toInstant(ZoneOffset.UTC)));
-                }
-
-                if ("on".equals(mayor))
-                {
-                    a.setMayor_edad(Boolean.TRUE);
-                } else
-
-                {
-                    a.setMayor_edad(Boolean.FALSE);
-                }
-                as.addAlumno(a);
+        switch (op) {
+            case "all":
                
+                request.setAttribute("clientes", clientes);
+                request.getRequestDispatcher("PintarClientes.jsp").forward(request, response);
+                break;
+            case "iniciarS":
+                
+                break;
+            case "insert":
+
                 break;
 
             case "delete":
-                a.setId(Long.parseLong(id));
-                as.delAlumno(a);
 
                 break;
             case "update":
-                fechaDate = format.parse(fecha);
-                a.setId(Long.parseLong(id));
-                a.setNombre(nombre);
-                a.setFecha_nacimiento(fechaDate);
-                if ("on".equals(mayor))
-                {
-                    a.setMayor_edad(Boolean.TRUE);
-                } else
-                {
-                    a.setMayor_edad(Boolean.FALSE);
-                }
-                as.updateAlumno(a);
+
                 break;
             default:
-                request.setAttribute("alumnos", as.getAllAlumnos());
+                //request.setAttribute("alumnos", ms.getAllMovimientos());
                 request.getRequestDispatcher("pintarListaAlumnos.jsp").forward(request, response);
 
         }
-        request.setAttribute("alumnos", as.getAllAlumnos());
-        request.getRequestDispatcher("pintarListaAlumnos.jsp").forward(request, response);
+        request.setAttribute("clientes", clientes);
+                request.getRequestDispatcher("PintarClientes.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -124,14 +91,11 @@ public class Alumnos extends HttpServlet
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
-        try
-        {
+            throws ServletException, IOException {
+        try {
             processRequest(request, response);
-        } catch (ParseException ex)
-        {
-            Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -145,14 +109,11 @@ public class Alumnos extends HttpServlet
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
-        try
-        {
+            throws ServletException, IOException {
+        try {
             processRequest(request, response);
-        } catch (ParseException ex)
-        {
-            Logger.getLogger(Alumnos.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -162,8 +123,7 @@ public class Alumnos extends HttpServlet
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo()
-    {
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 
